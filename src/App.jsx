@@ -1,10 +1,11 @@
-import Auth from './components/Auth';
+import Login from './pages/Signup/Signup';
 import './styles/App.css';
 
 function App() {
   return (
     <div className="App">
-      <Auth />
+      <Login />
+      <p>testing if component did mount</p>
     </div>
   );
 }
