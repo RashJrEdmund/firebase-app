@@ -1,12 +1,16 @@
 /* eslint-disable */
 import React from 'react';
-import { createUserWithEmailAndPassword, signInWithPopup } from 'firebase/auth';
+import {
+  createUserWithEmailAndPassword,
+  signInWithPopup,
+  signInWithEmailAndPassword,
+} from 'firebase/auth';
 import { auth, googleProvider } from '../../config/firebase';
 import useAlert from '../../hooks/UseAlert';
-import StyledSignup from './StyledSignup';
+import StyledLogin from './StyledLogin';
 import { useNavigate } from 'react-router';
 
-export default function Signup() {
+export default function Login() {
   const { AlertComponet, displayAlert, alertMsg } = useAlert();
   const [formData, setFormData] = React.useState({
     email: '',
@@ -15,7 +19,7 @@ export default function Signup() {
 
   const navigate = useNavigate();
 
-  const signUpWithEmailPassword = async () => {
+  const LoginWithEmailPassword = async () => {
     const { email, password } = formData;
 
     if (!email || !password) {
@@ -24,10 +28,11 @@ export default function Signup() {
     }
 
     try {
-      await createUserWithEmailAndPassword(auth, email, password)
+      await signInWithEmailAndPassword(auth, email, password)
         .then((res) => {
           console.log('email password signup res', res);
-          navigate('/', { replace: true });
+          displayAlert('signed in');
+          //   navigate('/', { replace: true });
         })
         .catch((e) => console.log(e)); // takes 3 parameters auth eamil and password
     } catch (err) {
@@ -35,7 +40,7 @@ export default function Signup() {
     }
   };
 
-  const gogoleSignUP = async () => {
+  const googleLogin = async () => {
     try {
       await signInWithPopup(auth, googleProvider)
         .then((res) => {
@@ -49,11 +54,11 @@ export default function Signup() {
   };
 
   return (
-    <StyledSignup>
+    <StyledLogin>
       {alertMsg.show && <AlertComponet />}
 
       <div className="form_field">
-        <p>create account</p>
+        <p>login to account</p>
 
         <input
           name="email"
@@ -75,17 +80,15 @@ export default function Signup() {
         <button
           className="singin_btn"
           type="button"
-          onClick={signUpWithEmailPassword}
+          onClick={LoginWithEmailPassword}
         >
-          sign up with Email
+          Login with Email
         </button>
 
-        <button className="singin_btn" type="button" onClick={gogoleSignUP}>
-          Google sign up
+        <button className="singin_btn" type="button" onClick={googleLogin}>
+          Google Login
         </button>
-
-        <p>already have an account? login</p>
       </div>
-    </StyledSignup>
+    </StyledLogin>
   );
 }
