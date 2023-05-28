@@ -2,8 +2,9 @@ import React from 'react';
 import StyledLanding from './StyledLanding';
 import NavBar from '../../components/NavBar/NavBar';
 import Footer from '../../components/Footer/Footer';
+import AuthGaurd from '../../HOC/AuthGaurd';
 
-export default function Landing() {
+function Landing() {
   return (
     <StyledLanding>
       <NavBar />
@@ -12,3 +13,5 @@ export default function Landing() {
     </StyledLanding>
   );
 }
+
+export default AuthGaurd(Landing);

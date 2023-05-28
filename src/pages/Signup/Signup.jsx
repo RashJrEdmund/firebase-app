@@ -5,6 +5,7 @@ import { auth, googleProvider } from '../../config/firebase';
 import useAlert from '../../hooks/UseAlert';
 import StyledSignup from './StyledSignup';
 import { useNavigate } from 'react-router';
+import { useAuth } from '../../hooks/AuthContext';
 
 export default function Signup() {
   const { AlertComponet, displayAlert, alertMsg } = useAlert();
@@ -14,6 +15,7 @@ export default function Signup() {
   });
 
   const navigate = useNavigate();
+  const { currentUser } = useAuth();
 
   const signUpWithEmailPassword = async () => {
     const { email, password } = formData;
@@ -47,6 +49,10 @@ export default function Signup() {
       console.log(err);
     }
   };
+
+  React.useEffect(() => {
+    console.log('this currentuser in Signup', currentUser);
+  }, [currentUser]);
 
   return (
     <StyledSignup>

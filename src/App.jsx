@@ -3,17 +3,20 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Signup from './pages/Signup/Signup';
 import Landing from './pages/Landing/Landing';
 import Login from './pages/Login/Login';
+import { AuthContextProvider } from './hooks/AuthContext';
 
 function App() {
   return (
     <div className="App">
-      <BrowserRouter>
-        <Routes>
-          <Route index element={<Landing />} />
-          <Route path="signup" element={<Signup />} />
-          <Route path="login" element={<Login />} />
-        </Routes>
-      </BrowserRouter>
+      <AuthContextProvider>
+        <BrowserRouter>
+          <Routes>
+            <Route index element={<Landing />} />
+            <Route path="register" element={<Signup />} />
+            <Route path="login" element={<Login />} />
+          </Routes>
+        </BrowserRouter>
+      </AuthContextProvider>
     </div>
   );
 }

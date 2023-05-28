@@ -1,14 +1,11 @@
 /* eslint-disable */
 import React from 'react';
-import {
-  createUserWithEmailAndPassword,
-  signInWithPopup,
-  signInWithEmailAndPassword,
-} from 'firebase/auth';
+import { signInWithPopup, signInWithEmailAndPassword } from 'firebase/auth';
 import { auth, googleProvider } from '../../config/firebase';
 import useAlert from '../../hooks/UseAlert';
 import StyledLogin from './StyledLogin';
 import { useNavigate } from 'react-router';
+import { useAuth } from '../../hooks/AuthContext';
 
 export default function Login() {
   const { AlertComponet, displayAlert, alertMsg } = useAlert();
@@ -16,6 +13,8 @@ export default function Login() {
     email: '',
     password: '',
   });
+
+  const { currentUser } = useAuth();
 
   const navigate = useNavigate();
 
@@ -27,17 +26,13 @@ export default function Login() {
       return;
     }
 
-    try {
-      await signInWithEmailAndPassword(auth, email, password)
-        .then((res) => {
-          console.log('email password signup res', res);
-          displayAlert('signed in');
-          //   navigate('/', { replace: true });
-        })
-        .catch((e) => console.log(e)); // takes 3 parameters auth eamil and password
-    } catch (err) {
-      console.log(err);
-    }
+    await signInWithEmailAndPassword(auth, email, password)
+      .then((res) => {
+        console.log('email password signup res', res);
+        displayAlert('signed in');
+        navigate('/', { replace: true });
+      })
+      .catch((e) => console.log(e)); // takes 3 parameters auth eamil and password
   };
 
   const googleLogin = async () => {
@@ -52,6 +47,10 @@ export default function Login() {
       console.log(err);
     }
   };
+
+  React.useEffect(() => {
+    console.log('this currentuser in login', currentUser);
+  }, [currentUser]);
 
   return (
     <StyledLogin>
