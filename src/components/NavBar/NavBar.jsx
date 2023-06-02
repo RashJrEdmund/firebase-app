@@ -13,6 +13,7 @@ import { useAuth } from '../../hooks/AuthContext';
 export default function NavBar() {
   const navigate = useNavigate();
   const { AlertComponet, displayAlert, alertMsg } = useAlert();
+  const location = useLocation();
 
   // const { currentUser } = useAuth();
 
@@ -31,12 +32,15 @@ export default function NavBar() {
     <StyledNavBar>
       {alertMsg.show && <AlertComponet />}
 
-      <p className="logo_section">Movie App</p>
+      <div className="container">
+        <p className="logo_section">Movie App</p>
 
-      <ul>
-        <li onClick={() => navigate('/profile')}>Profile</li>
-        <li onClick={handleLogout}>Logout</li>
-      </ul>
+        <ul>
+          <li onClick={() => navigate('/profile')}>Profile</li>
+          <li onClick={() => navigate('/photos')}>Photos</li>
+          <li onClick={handleLogout}>Logout</li>
+        </ul>
+      </div>
     </StyledNavBar>
   );
 }

@@ -4,6 +4,7 @@ import Signup from './pages/Signup/Signup';
 import Landing from './pages/Landing/Landing';
 import Login from './pages/Login/Login';
 import { AuthContextProvider } from './hooks/AuthContext';
+import Photos from './pages/Photos/Photos';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <BrowserRouter>
           <Routes>
             <Route index element={<Landing />} />
+            <Route path="/photos" element={<Photos />} />
             <Route path="register" element={<Signup />} />
             <Route path="login" element={<Login />} />
           </Routes>

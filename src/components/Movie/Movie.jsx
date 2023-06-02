@@ -2,10 +2,10 @@
 import styled from '@emotion/styled';
 import React from 'react';
 
-export default function Movie({ movie }) {
+export default function Movie({ movie, deleteMovie }) {
   const StyledMovie = styled.div`
-    height: 200px;
-    width: 200px;
+    height: 250px;
+    width: min(100%, 250px);
     border: 1px solid gray;
     display: flex;
     flex-direction: column;
@@ -15,6 +15,7 @@ export default function Movie({ movie }) {
     background-color: #18191a;
     box-shadow: 0 0 10px #000;
     position: relative;
+    margin: 10px auto;
 
     h2 {
       color: gold;
@@ -45,6 +46,19 @@ export default function Movie({ movie }) {
       align-items: center;
       gap: 10px;
     }
+
+    .del_btn {
+      background-color: #a52a2a;
+      padding: 2px 5px;
+      position: absolute;
+      bottom: -20px;
+      right: 0;
+      transition: 0.4s;
+
+      &:hover {
+        scale: 1.05;
+      }
+    }
   `;
 
   return (
@@ -57,6 +71,14 @@ export default function Movie({ movie }) {
         got an Oscar
         <input id={movie.id} type="checkbox" checked={movie.gotAnOscar} />
       </label>
+
+      <button
+        className="del_btn"
+        type="button"
+        onClick={() => deleteMovie(movie.id)}
+      >
+        delete
+      </button>
     </StyledMovie>
   );
 }
