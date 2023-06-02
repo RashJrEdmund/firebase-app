@@ -32,6 +32,19 @@ export default function Movie({ movie }) {
       width: 100%;
       white-space: nowrap;
     }
+
+    label {
+      color: #f5f5f5;
+      white-space: nowrap;
+      position: absolute;
+      bottom: 50%;
+      left: 50%;
+      transform: translate(-50%);
+      white-space: nowrap;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
   `;
 
   return (
@@ -39,6 +52,11 @@ export default function Movie({ movie }) {
       <h2>{movie?.title}</h2>
 
       <p>release Date: {movie?.releaseDate}</p>
+
+      <label htmlFor={movie.id}>
+        got an Oscar
+        <input id={movie.id} type="checkbox" checked={movie.gotAnOscar} />
+      </label>
     </StyledMovie>
   );
 }

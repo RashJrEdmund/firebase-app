@@ -14,6 +14,48 @@ const StyledLanding = styled.div`
     display: flex;
     align-items: flex-start;
     justify-content: flex-start;
+    position: relative;
+    gap: 20px;
+
+    .togle_form {
+      position: absolute;
+      color: #000;
+      font-weight: 600;
+      cursor: pointer;
+      top: -40px;
+      left: 0;
+    }
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    width: min(97vw, 400px);
+    height: fit-content;
+    padding: 10px;
+    margin: 2rem auto;
+    gap: 15px;
+
+    input {
+      height: 30px;
+      padding: 5px;
+    }
+
+    label {
+      width: 100%;
+      height: fit-content;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: #a52a2a;
+    }
+
+    button {
+      background-color: blueviolet;
+      width: 100%;
+      padding: 10px;
+      box-shadow: 0 0 10px #222;
+    }
   }
 `;
 
