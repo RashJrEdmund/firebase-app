@@ -44,8 +44,6 @@ export function AuthContextProvider({ children }) {
     await signInWithEmailAndPassword(auth, email, password)
       .then((res) => {
         console.log('email password signup res', res);
-        // displayAlert('signed in');
-        // navigate('/', { replace: true });
       })
       .catch((e) => console.log(e)); // takes 3 parameters auth eamil and password
   };

@@ -12,7 +12,7 @@ const AuthGaurd = (Component) => {
       if (currentUser) setUser(currentUser);
     }, [currentUser]);
 
-    console.log('this currentUser in Hoc', currentUser);
+    // console.log('this currentUser in Hoc', currentUser);
 
     return user ? (
       <Component {...props} currentUser={user} />

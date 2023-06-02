@@ -1,7 +1,17 @@
 import React from 'react';
-import StyledFooter from './StyledFooter';
+import styled from '@emotion/styled';
 
 export default function Footer() {
+  const StyledFooter = styled.div`
+    background-color: brown;
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    height: fit-content;
+    min-height: 100px;
+  `;
+
   return (
     <StyledFooter>
       <p>Footer</p>

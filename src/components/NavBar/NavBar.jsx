@@ -1,3 +1,4 @@
+/* eslint-disable */
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
@@ -13,11 +14,7 @@ export default function NavBar() {
   const navigate = useNavigate();
   const { AlertComponet, displayAlert, alertMsg } = useAlert();
 
-  const { currentUser } = useAuth();
-
-  React.useEffect(() => {
-    console.log('this currentuser in nav', currentUser);
-  }, [currentUser]);
+  // const { currentUser } = useAuth();
 
   const handleLogout = async () => {
     await signOut(auth, googleProvider)
