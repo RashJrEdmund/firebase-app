@@ -122,7 +122,7 @@ function Landing() {
 
         {movieForm && (
           <form onSubmit={handlesubmit}>
-            <p>create new movie</p>
+            <p>upload movie</p>
             <input
               type="text"
               placeholder="title"
@@ -144,7 +144,6 @@ function Landing() {
             <label htmlFor="oscar">
               will get an oscar
               <input
-                id="oscar"
                 type="checkbox"
                 placeholder="releas date"
                 onChange={({ target: { checked } }) =>

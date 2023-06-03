@@ -3,6 +3,7 @@ import styled from '@emotion/styled';
 import React from 'react';
 
 const StyledImage = styled.div`
+  position: relative;
   background-color: #18191a;
   box-shadow: 0 0 10px #000;
   height: 250px;
@@ -12,10 +13,26 @@ const StyledImage = styled.div`
   align-items: center;
   justify-content: center;
   gap: 10px;
-  margin: 10px auto;
+  margin: 10px auto 40px;
 
   img {
     width: 100%;
+  }
+
+  p {
+    position: absolute;
+    bottom: -55px;
+    left: 50%;
+    transition: 400ms color;
+    transform: translate(-50%);
+
+    &:hover {
+      color: #1da1f2;
+    }
+  }
+
+  @media only screen and (max-width: 650px) {
+    margin: 10px auto 90px;
   }
 `;
 
