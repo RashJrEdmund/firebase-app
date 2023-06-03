@@ -2,18 +2,22 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React from 'react';
-import { useNavigate } from 'react-router';
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router';
 import { signOut } from 'firebase/auth';
 import StyledNavBar from './StyledNavBar';
 import { auth, googleProvider } from '../../config/firebase';
 import useAlert from '../../hooks/UseAlert';
 import { useAuth } from '../../hooks/AuthContext';
+import Types from '../Types/Types';
 
 export default function NavBar() {
   const navigate = useNavigate();
   const { AlertComponet, displayAlert, alertMsg } = useAlert();
-  const location = useLocation();
+  const [showTypes, setShowTypes] = useState(false);
+  const [location, setLocation] = useState('/');
+  const { currentUser } = useAuth();
+  console.log('currentUser in navbar', currentUser);
 
   // const { currentUser } = useAuth();
 
@@ -27,17 +31,49 @@ export default function NavBar() {
         displayAlert('could not sign out');
       });
   };
+  const { pathname } = useLocation();
+  console.log('this path name', pathname);
+
+  useEffect(() => {
+    if (pathname.includes('photos')) {
+      setLocation('photos');
+    } else {
+      setLocation('/');
+    }
+  }, []);
 
   return (
-    <StyledNavBar>
+    <StyledNavBar
+      location
+      // photos={location === 'photos'}
+      // profile={location === 'profile'}
+    >
       {alertMsg.show && <AlertComponet />}
 
       <div className="container">
-        <p className="logo_section">Movie App</p>
+        <p className="logo_section" onClick={() => navigate('/')}>
+          Home
+        </p>
 
         <ul>
-          <li onClick={() => navigate('/profile')}>Profile</li>
-          <li onClick={() => navigate('/photos')}>Photos</li>
+          <li className="profile" onClick={() => navigate('/profile')}>
+            <span />
+            Profile
+          </li>
+          <span
+            style={{ position: 'relative' }}
+            onMouseOver={() => setShowTypes(true)}
+            onMouseOut={() => setShowTypes(false)}
+          >
+            <li
+              className="photos"
+              onClick={() => setShowTypes((prev) => !prev)}
+            >
+              types
+            </li>
+
+            {showTypes && <Types />}
+          </span>
           <li onClick={handleLogout}>Logout</li>
         </ul>
       </div>

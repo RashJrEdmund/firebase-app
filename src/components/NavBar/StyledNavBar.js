@@ -36,10 +36,30 @@ const StyledNavBar = styled.div`
       align-items: center;
       gap: 15px;
 
-      li {
+      & > li,
+      & > span {
         border: 1px solid #000;
         padding: 5px 10px;
         cursor: pointer;
+        position: relative;
+
+        &.profile {
+          background-color: ${({ location }) =>
+            location === 'profile' ? 'gold' : 'unset'};
+        }
+
+        &.photos {
+          background-color: ${({ location }) =>
+            location === 'photos' ? 'gold' : 'unset'};
+        }
+
+        /* &.profile {
+          background-color: ${({ profile }) => (profile ? 'gold' : 'unset')};
+        }
+
+        &.photos {
+          background-color: ${({ photos }) => (photos ? 'gold' : 'unset')};
+        } */
 
         &:hover {
           color: gold;
