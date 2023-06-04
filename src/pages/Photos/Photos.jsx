@@ -9,39 +9,17 @@ import StyledPhotos from './StyledPhotos';
 import { storage } from '../../config/firebase';
 import Loader from '../../components/Loader/Loader';
 import useAlert from '../../hooks/UseAlert';
-import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
-
-const arrImages = [
-  {
-    src: 'https://cn.i.cdn.ti-platform.com/content/2017/ben-10/showpage/sa/b10_sq.28167bbe.png',
-    title: 'Kid Ben 10',
-    id: 1,
-  },
-  {
-    src: 'https://m.media-amazon.com/images/M/MV5BYmQwYTc1ZDEtMzU3My00OTIzLWE1YmEtYmUyMmMzZTI2ZWNlXkEyXkFqcGdeQXVyOTgwMzk1MTA@._V1_FMjpg_UX1000_.jpg',
-    title: 'Ben Tennison',
-    id: 2,
-  },
-  {
-    src: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRTfaM3dTU3ixL-omfx5LlHsgR_7t4SdBLXsg&usqp=CAU',
-    title: 'Iron Man',
-    id: 3,
-  },
-  {
-    src: 'https://www.denofgeek.com/wp-content/uploads/2021/12/spider-man-1.jpg?fit=1200%2C680',
-    title: 'Spiderman',
-    id: 4,
-  },
-];
+import { ref, listAll, getDownloadURL } from 'firebase/storage';
+import { handleFileUpload } from '../../services/utils';
 
 export default function Photos() {
   const [imgForm, setImgForm] = React.useState(false);
   const [loading, setLoading] = React.useState(false);
   const [file, setFile] = React.useState(null);
   const [imgPreview, setImgPreview] = React.useState(null);
-  const [onlineImgList, setOnlineImgList] = React.useState([
-    ...arrImages,
-  ]); /* onlineImgList is supposed to look like {src: string, title: string, id: number} */
+  const [onlineImgList, setOnlineImgList] = React.useState(
+    []
+  ); /* onlineImgList is supposed to look like {src: string, title: string, id: number} */
 
   const { AlertComponet, displayAlert, alertMsg } = useAlert();
   const fileRef = useRef();
@@ -69,67 +47,81 @@ export default function Photos() {
     setImgPreview(previewPath);
   };
 
-  const handleFilesubmit = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!file) return displayAlert('no file detected');
+    const utilObj = {
+      fileRef,
+      file,
+      setFile,
+      setImgPreview,
+      setLoading,
+      displayAlert,
+      getOnlineImages,
+    };
 
-    setLoading(true);
-
-    const fileNameAndExtensionArr = `projectImages/${
-      file.name.split('.').shift() +
-      '-' +
-      Date.now() +
-      '.' +
-      file.name.split('.').pop()
-    }`;
-
-    // the ref below takes two parrametes
-    // storage, from firestore, and the file path inlcuing online folder name
-
-    const projectImagesRef = ref(storage, fileNameAndExtensionArr);
-
-    await uploadBytes(projectImagesRef, file)
-      .then(({ metadata: { contentType } }) => {
-        setLoading(false);
-        setTimeout(() => {
-          setImgPreview(null);
-          fileRef.current.value = '';
-        }, 2500);
-
-        displayAlert(`${contentType?.split('/').shift() || 'file'} uploaded`);
-        getOnlineImages();
-      })
-      .catch(() => {
-        setLoading(false);
-        displayAlert('could not upload file');
-      })
-      .finally(() => setFile(null));
+    handleFileUpload(utilObj);
   };
 
-  const getOnlineImages = async () => {
+  // const getOnlineImages = () => {
+  //   const onlineImageRef = ref(storage, 'projectImages/');
+
+  //   listAll(onlineImageRef).then((res) => {
+  //     res.items.forEach((imgObj) => {
+  //       console.log('this imgObj', imgObj);
+  //       getDownloadURL(imgObj).then((imgUrl) => {
+  //         setOnlineImgList((prev) => {
+  //           const newId = 1; /*  || prev.length > 0 ? prev.pop().id + 1 : 1 */
+  //           const newImgItem = {
+  //             src: imgUrl,
+  //             title: imgObj.name,
+  //             id: newId,
+  //           };
+
+  //           return [...prev, newImgItem];
+  //         });
+  //       });
+  //     });
+  //   });
+  // };
+
+  const [imgArr, setImagArr] = React.useState([]);
+
+  const getOnlineImages = () => {
     const onlineImageRef = ref(storage, 'projectImages/');
-    await listAll(onlineImageRef).then((res) => {
-      const imgArr = [];
+
+    listAll(onlineImageRef).then((res) => {
+      console.log('this', res);
+      // return;
+      // const imgArr = [];
       res.items.forEach(async (imgObj) => {
         console.log('this imgObj', imgObj);
         await getDownloadURL(imgObj).then((imgUrl) => {
           const newImgItem = {
             src: imgUrl,
             title: imgObj.name,
-            id: 1 /* || imgArr.length > 0 ? imgArr.pop().id++ : 1 */,
+            id: 1 /* || imgArr.length > 0 ? imgArr.pop().id+1 : 1 */,
           };
 
-          imgArr.push(newImgItem);
+          // imgArr.push(newImgItem);
+          setImagArr((prev) => [...prev, newImgItem]);
         });
       });
-
-      setOnlineImgList((prev) => [...prev, ...imgArr]);
     });
   };
 
   React.useEffect(() => {
     getOnlineImages();
   }, []);
+
+  React.useEffect(() => {
+    console.clear();
+    console.log('i rendered', onlineImgList);
+    // const unique =
+
+    const unique = Array.from(new Set(imgArr));
+
+    setOnlineImgList((prev) => [...prev, ...unique]);
+  }, [imgArr]);
 
   return (
     <>
@@ -140,7 +132,7 @@ export default function Photos() {
         <NavBar />
 
         {!imgForm && (
-          <form onSubmit={handleFilesubmit}>
+          <form onSubmit={handleSubmit}>
             <p>upload a file</p>
             {imgPreview && (
               <div
@@ -167,7 +159,7 @@ export default function Photos() {
             {imgForm ? 'cancel' : '+Add File'}
           </p>
 
-          {onlineImgList.map((image) => (
+          {onlineImgList?.map((image) => (
             <Images image={image} key={image.id} />
           ))}
         </div>

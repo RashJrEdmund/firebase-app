@@ -17,7 +17,7 @@ export default function NavBar() {
   const [showTypes, setShowTypes] = useState(false);
   const [location, setLocation] = useState('/');
   const { currentUser } = useAuth();
-  console.log('currentUser in navbar', currentUser);
+  // console.log('currentUser in navbar', currentUser);
 
   // const { currentUser } = useAuth();
 
