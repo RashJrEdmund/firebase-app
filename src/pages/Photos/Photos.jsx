@@ -9,7 +9,7 @@ import StyledPhotos from './StyledPhotos';
 import { storage } from '../../config/firebase';
 import Loader from '../../components/Loader/Loader';
 import useAlert from '../../hooks/UseAlert';
-import { ref, uploadBytes } from 'firebase/storage';
+import { ref, uploadBytes, listAll, getDownloadURL } from 'firebase/storage';
 
 const arrImages = [
   {
@@ -39,6 +39,9 @@ export default function Photos() {
   const [loading, setLoading] = React.useState(false);
   const [file, setFile] = React.useState(null);
   const [imgPreview, setImgPreview] = React.useState(null);
+  const [onlineImgList, setOnlineImgList] = React.useState([
+    ...arrImages,
+  ]); /* onlineImgList is supposed to look like {src: string, title: string, id: number} */
 
   const { AlertComponet, displayAlert, alertMsg } = useAlert();
   const fileRef = useRef();
@@ -71,17 +74,30 @@ export default function Photos() {
     if (!file) return displayAlert('no file detected');
 
     setLoading(true);
-    const projectImagesRef = ref(
-      storage,
-      `projectImages/${file.name + '-' + Date.now()}` // the path to where we storing. and plus, projectImages is the online folder
-    );
+
+    const fileNameAndExtensionArr = `projectImages/${
+      file.name.split('.').shift() +
+      '-' +
+      Date.now() +
+      '.' +
+      file.name.split('.').pop()
+    }`;
+
+    // the ref below takes two parrametes
+    // storage, from firestore, and the file path inlcuing online folder name
+
+    const projectImagesRef = ref(storage, fileNameAndExtensionArr);
 
     await uploadBytes(projectImagesRef, file)
-      .then((res) => {
+      .then(({ metadata: { contentType } }) => {
         setLoading(false);
-        setTimeout(() => setImgPreview(null), 2500);
+        setTimeout(() => {
+          setImgPreview(null);
+          fileRef.current.value = '';
+        }, 2500);
 
-        displayAlert('file uploaded');
+        displayAlert(`${contentType?.split('/').shift() || 'file'} uploaded`);
+        getOnlineImages();
       })
       .catch(() => {
         setLoading(false);
@@ -89,6 +105,31 @@ export default function Photos() {
       })
       .finally(() => setFile(null));
   };
+
+  const getOnlineImages = async () => {
+    const onlineImageRef = ref(storage, 'projectImages/');
+    await listAll(onlineImageRef).then((res) => {
+      const imgArr = [];
+      res.items.forEach(async (imgObj) => {
+        console.log('this imgObj', imgObj);
+        await getDownloadURL(imgObj).then((imgUrl) => {
+          const newImgItem = {
+            src: imgUrl,
+            title: imgObj.name,
+            id: 1 /* || imgArr.length > 0 ? imgArr.pop().id++ : 1 */,
+          };
+
+          imgArr.push(newImgItem);
+        });
+      });
+
+      setOnlineImgList((prev) => [...prev, ...imgArr]);
+    });
+  };
+
+  React.useEffect(() => {
+    getOnlineImages();
+  }, []);
 
   return (
     <>
@@ -126,7 +167,7 @@ export default function Photos() {
             {imgForm ? 'cancel' : '+Add File'}
           </p>
 
-          {arrImages.map((image) => (
+          {onlineImgList.map((image) => (
             <Images image={image} key={image.id} />
           ))}
         </div>

@@ -53,8 +53,6 @@ function Landing() {
         id: docu.id,
       }));
       setMovieList(filteredData);
-
-      console.log('this data', data, filteredData);
     } catch (err) {
       displayAlert('an erro occured in useEffect');
     }
